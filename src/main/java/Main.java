@@ -29,49 +29,13 @@ public class Main {
         }).start();
 
         // поток для подсчета строк с наиболее повторяющимся символом "a"
-        new Thread(() -> {
-            int countA = 0;
-            for (int i = 0; i < NUMBER_OF_TEXTS; i++) {
-                try {
-                    if (charMaxRepeat(texts1.take(), TEXTS_LETTERS) == 'a') {
-                        countA++;
-                    }
-                } catch (InterruptedException e) {
-                    return;
-                }
-            }
-            System.out.println("Число строк с макс. кол-вом \"a\": " + countA);
-        }).start();
+        threadStarter(texts1, 'a');
 
         // поток для подсчета строк с наиболее повторяющимся символом "b"
-        new Thread(() -> {
-            int countA = 0;
-            for (int i = 0; i < NUMBER_OF_TEXTS; i++) {
-                try {
-                    if (charMaxRepeat(texts2.take(), TEXTS_LETTERS) == 'b') {
-                        countA++;
-                    }
-                } catch (InterruptedException e) {
-                    return;
-                }
-            }
-            System.out.println("Число строк с макс. кол-вом \"b\": " + countA);
-        }).start();
+        threadStarter(texts2, 'b');
 
         // поток для подсчета строк с наиболее повторяющимся символом "c"
-        new Thread(() -> {
-            int countA = 0;
-            for (int i = 0; i < NUMBER_OF_TEXTS; i++) {
-                try {
-                    if (charMaxRepeat(texts3.take(), TEXTS_LETTERS) == 'c') {
-                        countA++;
-                    }
-                } catch (InterruptedException e) {
-                    return;
-                }
-            }
-            System.out.println("Число строк с макс. кол-вом \"c\": " + countA);
-        }).start();
+        threadStarter(texts3, 'c');
 
     }
 
@@ -112,6 +76,23 @@ public class Main {
             }
         }
         return result;
+    }
+
+    // метод для запуска потоков
+    public static void threadStarter(BlockingQueue<String> texts, char ch) {
+        new Thread(() -> {
+            int countA = 0;
+            for (int i = 0; i < NUMBER_OF_TEXTS; i++) {
+                try {
+                    if (charMaxRepeat(texts.take(), TEXTS_LETTERS) == ch) {
+                        countA++;
+                    }
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+            System.out.printf("Число строк с макс. кол-вом \"%c\": %s%n", ch, countA);
+        }).start();
     }
 
 }
